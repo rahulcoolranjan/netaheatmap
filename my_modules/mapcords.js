@@ -1,6 +1,6 @@
 'use strict'
 var fetch=require("./fetch");
-var url_ext_link="http://localhost:4200/main/venturepart/file.php";
+var url_ext_link="http://localhost:1234/main/venturepart/state_file.php";
 var url_fetch=function(url, options, callback) {
 	if (!callback && typeof options === 'function') {
         callback = options;
