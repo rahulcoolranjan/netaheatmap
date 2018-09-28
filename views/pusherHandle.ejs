@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<head>
+    <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
+    
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+        window.meta_data=null;
+        var pusher = new Pusher('24e9d0687e80f1b51c74',
+            { cluster: 'ap2', forceTLS: true });
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('my-event',
+            function (data) {
+               // console.log(data);
+    
+               parsetoRenderer(JSON.stringify(data));
+               // window.meta_data=data;
+                alert(JSON.stringify(data));
+            }
+        );
+        function parsetoRenderer(getData){
+            $.ajax({
+                method:"post",
+                url:"renderMap",
+                data:{dataReq:getData},
+                success:function(data){
+                    $("#mapRender").html(data);
+                }
+            })
+        }
+    </script>
+    <div id="mapRender"></div>
+    
+</head>

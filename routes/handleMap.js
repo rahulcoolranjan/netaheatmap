@@ -97,68 +97,75 @@ router.get("/national",(req,res)=>{
 		);
 });
 router.get("/pusher",(req,res)=>{
+		
+	state_parse={
+		"state_id":"9782ecfe-2cd9-4f45-8f16-5c9a8e1b0344",
+		"cities":{"id":"e310976e-f4c9-4d2c-99c6-5e44f39d6c7e","rating":"3","cl":"green","avg_rating":"4","avg_cl":"yellow"}	
+		};
+
+	pusher.trigger('my-channel', 'my-event', { "message": state_parse});
 	
-		state_parse=[{
-			"state_id":"9782ecfe-2cd9-4f45-8f16-5c9a8e1b0344",
-			"cities":[
-				{"id":"0df8af03-328e-4cb3-83ae-0651dc8ddebc","rating":"3","cl":"green","avg_rating":"4","avg_cl":"yellow"},
-				{"id":"24a5ebfe-351f-4299-9a76-27e4fd0e07f4","rating":"2","cl":"blue","avg_rating":"2","avg_cl":"pink"}
-				]
-			},
-			{
-				"state_id":"6545dc87-0b13-470c-8fec-928aa25d81c5",
-				"cities":[
-					{"id":"5018bd7e-e5d5-4cc6-ad5b-79fb1eabb090","rating":"3","cl":"green","avg_rating":"4","avg_cl":"yellow"},
-					{"id":"1c9533d7-ff3d-4047-a153-fd6d69016315","rating":"2","cl":"blue","avg_rating":"2","avg_cl":"pink"}
-					]
-				}
-		];
+	res.render("../views/pusherHandle",{});
+});
+router.post("/renderMap",(req,res)=>{
+	
+		state_parse=req.body.dataReq;
+		state_parse=JSON.parse(state_parse)["message"];
+		//console.log(state_parse);
 
 
 		state_all=[];
 		city_all=[];
 		cns=0;
 		console.log("State Parse " );
-		for(let i=0; i<state_parse.length; i++){
-			
-			State.find({"id":state_parse[i].state_id}).then((data)=>{
+		
+		async.waterfall([
+			function(callback){
+			State.find({"id":state_parse.state_id}).then((data)=>{
 				state_coords=data[0].cords;
 				//ps=state_parse.cities;
-				state_id=state_parse[i].state_id;
-				console.log("Searching for "+state_parse[i].state_id);
+				state_id=state_parse.state_id;
+				console.log("Searching for "+state_parse.state_id);
 				console.log("Data over State Record --- ");
 				//console.log(data);
 				cities=[]
 				ct_cnt=0;
-				state_city_length=state_parse[i].cities.length;
-				for(let j=0; j<state_parse[i].cities.length; j++){
-					console.log("Cities :- "+state_parse[i].cities[j].id);
-					Cities.find({"id":state_parse[i].cities[j].id}).then((data_ct)=>{
-						console.log("Entered "+j);
+				//state_city_length=state_parse.cities.length;
+				//for(let j=0; j<state_parse[i].cities.length; j++){
+					console.log("Cities :- "+state_parse.cities.id);
+					Cities.find({"id":state_parse.cities.id}).then((data_ct)=>{
+						//console.log("Entered "+j);
 						ct_cnt++;
 						console.log("Entered On "+ct_cnt);
 						//console.log(data_ct);
 						console.log("Fetched Id city "+data_ct[0].id);
 						city_coords=data_ct.cords;
-						ps=state_parse[i].cities[j];
+						ps=state_parse.cities;
 						cities.push({"city_id":data_ct[0].id,"city_cords":data_ct[0].cords,"rating":ps.rating,"cl":ps.cl,"avg_rating":ps.avg_rating,"avg_cl":ps.avg_cl})
 						console.log("----print---",cities);
 						
-						if(ct_cnt>=state_city_length){
+						//if(ct_cnt>=state_city_length){
 							message={"state_id":state_id,"cities":cities};
 							console.log("Data --- ");
-							console.log(message);
-							pusher.trigger('my-channel', 'my-event', { "message": message});
-						}
+						//	console.log(message);
+							//pusher.trigger('my-channel', 'my-event', { "message": message});
+						//}
+						callback(null,"val3");
 					});
-				}
+				//}
 
 			});
+		},
+		function(data,callback){
+			console.log("Runner");
+			console.log(message);
+			res.render("../views/mapbuild",{message:message});
+		},
+	],function(err,result){
+			console.log(err);
+	}
+	);
 
-
-		}
-
-		res.render("../views/mapbuild",{});
 });
 
 
