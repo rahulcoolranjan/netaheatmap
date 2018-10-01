@@ -72,6 +72,49 @@ router.get("/city",(req,res)=>{
 		);
 		//timer=0;
 });
+var fetch=require("../my_modules/fetch");
+router.get("/latcheck",(req,res)=>{
+		lat=req.query.lat;
+		lng=req.query.lng;
+		process_url="http://neta-app.com/api/v1/constituencies/latlng?lat="+lat+"&lng="+lng+"";
+		var url_data=null;
+		var assembly_id=null;
+		var json_Data=null;
+		async.waterfall([
+			function(callback){
+				console.log("Zone 1");
+				var url_fetch=function(url, options, callback) {
+					if (!callback && typeof options === 'function') {
+						callback = options;
+						options = undefined;
+					}
+					var urls=url;
+					fetch.fetchUrl(urls, {},(error, meta, body) => {
+						if (error) {
+							return console.log('ERROR', error.message || error);
+						}
+						return callback(null,body);
+					});					
+				}
+				url_data=url_fetch(process_url,{},(req,res)=>{
+					url_data=""+res;
+					console.log("Getting Data");
+					callback(null,"val1");
+				});
+				
+			},
+			function(data,callback){
+				json_Data=JSON.parse(url_data);
+				assembly_id=json_Data.data.selected.assembly_id;
+				console.log("Zone 3");
+				console.log(assembly_id);
+				res.send(assembly_id);
+			},
+		],function(err,result){
+				console.log(err);
+		}
+		);
+});
 router.get("/national",(req,res)=>{
 		get=req.query;
 		process_url=get.url;
@@ -97,69 +140,108 @@ router.get("/national",(req,res)=>{
 		);
 });
 router.get("/pusher",(req,res)=>{
-		
-	state_parse={
+	Get=req.query;
+	/*state_parse={
 		"state_id":"9782ecfe-2cd9-4f45-8f16-5c9a8e1b0344",
-		"cities":{"id":"e310976e-f4c9-4d2c-99c6-5e44f39d6c7e","rating":"3","cl":"green","avg_rating":"4","avg_cl":"yellow"}	
+		"cities":{"id":"a174f79e-c365-458d-bdb4-2c7ccbed0207","rating":"3","cl":"green","avg_rating":"4","avg_cl":"yellow"}	
+	};*/
+//http://localhost:3000/map/pusher?lat=31.2522116&lng=75.7031153&rating=4&color=green&average_rating=2&average_color=yellow
+	state_parse={
+		"lat":""+Get.lat+"","lng":""+Get.lng+"","rating":""+Get.rating+"","cl":""+Get.color+"",
+		"avg_rating":""+Get.average_rating+"","avg_cl":""+Get.average_color+""
 		};
-
-	pusher.trigger('my-channel', 'my-event', { "message": state_parse});
+	console.log("Avn");
+	pusher.trigger('punjab', 'my-event', { "area": state_parse});
 	
 	res.render("../views/pusherHandle",{});
 });
+function genRandomColor(){
+	var hex = Math.floor( Math.random() * 0xFFFFFF );
+	var res = document.getElementById('result');
+	var result = hex.toString(16);
+	return result;
+}
 router.post("/renderMap",(req,res)=>{
 	
 		state_parse=req.body.dataReq;
-		state_parse=JSON.parse(state_parse)["message"];
-		//console.log(state_parse);
-
-
+		state_parse=JSON.parse(state_parse)["area"];
+		// console.log(state_parse);
+		// console.log(state_parse.lat);
+		lat=state_parse.lat;
+		lng=state_parse.lng;
+		rating=state_parse.rating;
+		cl=state_parse.cl;
+		avg_rating=state_parse.avg_rating;
+		avg_cl=state_parse.avg_cl;
 		state_all=[];
 		city_all=[];
 		cns=0;
-		console.log("State Parse " );
-		
+		console.log("State Parse c" );
+		assembly_id=null;
+		mapCall="";
 		async.waterfall([
+			
 			function(callback){
-			State.find({"id":state_parse.state_id}).then((data)=>{
-				state_coords=data[0].cords;
-				//ps=state_parse.cities;
-				state_id=state_parse.state_id;
-				console.log("Searching for "+state_parse.state_id);
-				console.log("Data over State Record --- ");
-				//console.log(data);
-				cities=[]
-				ct_cnt=0;
-				//state_city_length=state_parse.cities.length;
-				//for(let j=0; j<state_parse[i].cities.length; j++){
-					console.log("Cities :- "+state_parse.cities.id);
-					Cities.find({"id":state_parse.cities.id}).then((data_ct)=>{
+				console.log("Zone 1a");
+				var url_fetch=function(url, options, callback) {
+					if (!callback && typeof options === 'function') {
+						callback = options;
+						options = undefined;
+					}
+					var urls=url;
+					fetch.fetchUrl(urls, {},(error, meta, body) => {
+						if (error) {
+							return console.log('ERROR', error.message || error);
+						}
+						return callback(null,body);
+					});					
+				}
+				process_url="http://neta-app.com/api/v1/constituencies/latlng?lat="+lat+"&lng="+lng+"";
+				url_data=url_fetch(process_url,{},(req,res)=>{
+					url_data=""+res;
+					console.log("Getting Data");
+					callback(null,"val1");
+				});
+				
+			},
+			function(data,callback){
+				json_Data=JSON.parse(url_data);
+				assembly_id=json_Data.data.selected.assembly_id;
+				console.log("Got Assembly Id: "+assembly_id);
+				callback(null,"val1");
+			},
+			function(data,callback){
+					cities=[];
+					Cities.find({"id":assembly_id}).then((data_ct)=>{
 						//console.log("Entered "+j);
-						ct_cnt++;
-						console.log("Entered On "+ct_cnt);
+						state_id=data_ct[0].state_id;
+						//console.log("Entered On "+ct_cnt);
 						//console.log(data_ct);
 						console.log("Fetched Id city "+data_ct[0].id);
 						city_coords=data_ct.cords;
 						ps=state_parse.cities;
-						cities.push({"city_id":data_ct[0].id,"city_cords":data_ct[0].cords,"rating":ps.rating,"cl":ps.cl,"avg_rating":ps.avg_rating,"avg_cl":ps.avg_cl})
-						console.log("----print---",cities);
-						
-						//if(ct_cnt>=state_city_length){
-							message={"state_id":state_id,"cities":cities};
-							console.log("Data --- ");
-						//	console.log(message);
-							//pusher.trigger('my-channel', 'my-event', { "message": message});
-						//}
-						callback(null,"val3");
+						cities.push({"city_id":data_ct[0].id,"city_cords":data_ct[0].cords,"rating":rating,"cl":cl,"avg_rating":avg_rating,"avg_cl":avg_cl})
+						State.find({"id":state_id}).then((data)=>{
+							if(state_id=="8eb01723-df81-43ff-95be-302f60229bda"){
+								mapCall="mapBuild";
+							}else{
+								mapCall="mapBuild1";
+							}
+							//console.log("Entered "+j);
+							state_cords=data[0].cords;
+							state_cordinate=data[0].state_coordinate;
+							state_cords=state_cords.replace(/&#34;/gi, '"');
+							console.log("STATE");
+							//console.log(state_cords);
+							message={"state_cord":state_cords,"lat":lat,"lng":lng,"city_color":cl,"cords":state_cordinate,"cities":cities};
+							callback(null,"val3");
+						});
 					});
-				//}
-
-			});
 		},
 		function(data,callback){
 			console.log("Runner");
-			console.log(message);
-			res.render("../views/mapbuild",{message:message});
+			//console.log(message);
+			res.render("../views/"+mapCall+"",{message:message});
 		},
 	],function(err,result){
 			console.log(err);

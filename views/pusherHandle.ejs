@@ -2,23 +2,27 @@
 <head>
     <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
     
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
         window.meta_data=null;
         var pusher = new Pusher('24e9d0687e80f1b51c74',
             { cluster: 'ap2', forceTLS: true });
-        var channel = pusher.subscribe('my-channel');
+        var channel = pusher.subscribe('punjab');
         channel.bind('my-event',
             function (data) {
+            //    alert();
                // console.log(data);
     
                parsetoRenderer(JSON.stringify(data));
                // window.meta_data=data;
-                alert(JSON.stringify(data));
+                //alert(JSON.stringify(data));
             }
         );
+    </script>
+    <div id="mapRender">Loading</div>
+    <script>
+        
         function parsetoRenderer(getData){
             $.ajax({
                 method:"post",
@@ -30,6 +34,5 @@
             })
         }
     </script>
-    <div id="mapRender"></div>
-    
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
