@@ -44,12 +44,18 @@
     container: 'map',
     style: 'mapbox://styles/madhu314/cjc8zh45k7fpi2spltb98qv5c',//mapbox://styles/mapbox/streets-v9',
       center: [<%= message.lng %>,<%= message.lat %>],
-      zoom: 8,
+      zoom: 3,
       attributionControl: false,
       logoPosition: 'bottom-left'
 });
   map.on('load', function () {
 
+  
+  
+		map.addSource("country_map", {
+          "type": "geojson",
+          "data": {"type":"FeatureCollection","features":[<%- message.national_cord %>]}
+        })
         map.addSource("state_map", {
           "type": "geojson",
           "data": {"type":"FeatureCollection","features":<%- message.state_cord %>}
@@ -61,12 +67,21 @@
         })
 
         map.addLayer({
+            "id": "fill-layer",
+            "type": "fill",
+            "source": "country_map",
+            "paint": {
+                "fill-color" :"#7FFF00"
+            },
+            "filter": ["==", "$type", "Polygon"]
+        });
+        map.addLayer({
             "id": "stroke-layer",
             "type": "line",
-            "source": "state_map",
+            "source": "country_map",
             "paint": {
-                "line-color": "#745df1",
-                "line-width": 4,
+                "line-color": "#114400",
+                "line-width": 1
             },
             "filter": ["==", "$type", "Polygon"]
         });
@@ -75,7 +90,7 @@
   id: 'trees-heat',
   type: 'heatmap',
   source: 'city_map',
-  maxzoom: 15,
+  maxzoom: 24,
   paint: {
     // increase weight as diameter breast height increases
     'heatmap-weight': {
@@ -125,17 +140,17 @@ map.addLayer({
   id: 'trees-point',
   type: 'circle',
   source: 'city_map',
-  minzoom: 14,
+  minzoom: 32,
   paint: {
     // increase the radius of the circle as the zoom level and dbh value increases
     'circle-radius': {
       property: 'dbh',
       type: 'exponential',
       stops: [
-        [{ zoom: 15, value: 1 }, 5],
-        [{ zoom: 15, value: 62 }, 10],
-        [{ zoom: 22, value: 1 }, 20],
-        [{ zoom: 22, value: 62 }, 50],
+        [{ zoom: 32, value: 1 }, 5],
+        [{ zoom: 32, value: 62 }, 10],
+        [{ zoom: 40, value: 1 }, 20],
+        [{ zoom: 40, value: 62 }, 50],
       ]
     },
     'circle-color': {

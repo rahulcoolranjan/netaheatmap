@@ -44,7 +44,7 @@
     container: 'map',
     style: 'mapbox://styles/madhu314/cjc8zh45k7fpi2spltb98qv5c',//mapbox://styles/mapbox/streets-v9',
       center: [<%= message.lng %>,<%= message.lat %>],
-      zoom: 8,
+      zoom: 16,
       attributionControl: false,
       logoPosition: 'bottom-left'
 });
@@ -54,19 +54,20 @@
           "type": "geojson",
           "data": {"type":"FeatureCollection","features":<%- message.state_cord %>}
         })
+	
         map.addSource("city_map", {
           "type": "geojson",
           "data": {"type":"FeatureCollection","features":[{"id":"<%= message.cities[0].city_id %>","type":"Feature","geometry":{"type":"MultiPolygon","coordinates":<%= message.cities[0].city_cords %>
 		  },"properties":{"id":"<%= message.cities[0].city_id %>","name":"Wazirpur"}}]}
         })
-
+	
         map.addLayer({
             "id": "stroke-layer",
             "type": "line",
             "source": "state_map",
             "paint": {
-                "line-color": "#745df1",
-                "line-width": 4,
+                "line-color": "#555555",
+                "line-width": 2
             },
             "filter": ["==", "$type", "Polygon"]
         });
@@ -75,7 +76,7 @@
   id: 'trees-heat',
   type: 'heatmap',
   source: 'city_map',
-  maxzoom: 15,
+  maxzoom: 14,
   paint: {
     // increase weight as diameter breast height increases
     'heatmap-weight': {
