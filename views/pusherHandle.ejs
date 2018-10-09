@@ -1,38 +1,44 @@
 <!DOCTYPE html>
+
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
-    
+
     <script>
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
-        window.meta_data=null;
+        window.meta_data = null;
         var stateCode = "<%= stateCode %>";
         var assemblyId = "<%= assemblyId %>";
-        var candidateId= "<%= candidateId %>";
-        var pusher = new Pusher('24e9d0687e80f1b51c74',
-            { cluster: 'ap2', forceTLS: true });
-        var channel = pusher.subscribe(stateCode+"-"+candidateId);
+        var candidateId = "<%= candidateId %>";
+        var map_type = "<%= map_type %>";
+        var pusher = new Pusher('24e9d0687e80f1b51c74', {
+            cluster: 'ap2',
+            forceTLS: true
+        });
+        var channel = pusher.subscribe(map_type + "-" + stateCode + "-" + candidateId);
         channel.bind('my-event',
             function (data) {
-            //    alert();
-              // console.log(data);
-    
-               parsetoRenderer(JSON.stringify(data),assemblyId);
-               // window.meta_data=data;
+                //    alert();
+                // console.log(data);
+
+                parsetoRenderer(JSON.stringify(data), assemblyId);
+                // window.meta_data=data;
                 //alert(JSON.stringify(data));
             }
         );
     </script>
     <script>
-        
-        function parsetoRenderer(getData, assemblyId){
+        function parsetoRenderer(getData, assemblyId) {
             $.ajax({
-                method:"post",
-                url:"nationalMap",
-                data:{dataReq:getData, assemblyId:assemblyId},
-                success:function(data){
-                    console.log("$$$$$$$$$$$$",data);
+                method: "post",
+                url: "<%= map_type %>",
+                data: {
+                    dataReq: getData,
+                    assemblyId: assemblyId
+                },
+                success: function (data) {
+                    //   console.log("$$$$$$$$$$$$", data);
                     $("#mapRender").html(data);
                 }
             })
@@ -53,8 +59,10 @@
         }
     </script>
 </head>
+
 <body>
-    
+
     <div id="mapRender">Loading</div>
 </body>
+
 </html>
