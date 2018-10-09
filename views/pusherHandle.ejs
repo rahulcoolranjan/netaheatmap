@@ -12,6 +12,7 @@
         var assemblyId = "<%= assemblyId %>";
         var candidateId = "<%= candidateId %>";
         var map_type = "<%= map_type %>";
+        var tempGetData = '{"area":<%- state_parse %>}';
         var pusher = new Pusher('24e9d0687e80f1b51c74', {
             cluster: 'ap2',
             forceTLS: true
@@ -19,17 +20,23 @@
         var channel = pusher.subscribe(map_type + "-" + stateCode + "-" + candidateId);
         channel.bind('my-event',
             function (data) {
-                //    alert();
-                // console.log(data);
-
                 parsetoRenderer(JSON.stringify(data), assemblyId);
-                // window.meta_data=data;
-                //alert(JSON.stringify(data));
             }
         );
     </script>
     <script>
+        // console.log("Try it out"); //{"area":"[object Object]"}
+        // console.log(JSON.stringify(tempGetData));
+        //console.log(tempGetData);
+        setTimeout(() => {
+
+            parsetoRenderer(tempGetData, assemblyId);
+        }, 6000);
+
+
         function parsetoRenderer(getData, assemblyId) {
+            console.log("Data Received ");
+            console.log(getData);
             $.ajax({
                 method: "post",
                 url: "<%= map_type %>",
@@ -38,12 +45,9 @@
                     assemblyId: assemblyId
                 },
                 success: function (data) {
-                    //   console.log("$$$$$$$$$$$$", data);
                     $("#mapRender").html(data);
                 }
             })
-
-
             //  var xmlHttp = new XMLHttpRequest();
             // xmlHttp.open("POST", "nationalMap", true);
             // xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

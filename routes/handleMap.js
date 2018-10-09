@@ -78,7 +78,8 @@ router.get("/pusher", (req, res) => {
 					map_type: map_type,
 					stateCode: state_code_id,
 					assemblyId: assembly_id,
-					candidateId: Get.candidateId
+					candidateId: Get.candidateId,
+					state_parse: JSON.stringify(state_parse)
 				});
 			},
 		], function (err, result) {
