@@ -9,7 +9,8 @@ var mapRouter = require('./routes/handleMap');
 var app = express();
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/map_ven',{useNewUrlParser: true})
+var mongoURL = "mongodb://localhost:27017/map_ven";
+mongoose.connect(process.env.MONGO_URL || mongoURL,{useNewUrlParser: true})
   .then(() =>  console.log('db connection succesful'))
   .catch((err) => console.error(err));
 
@@ -53,7 +54,7 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-port=3000;
+port = process.env.PORT || 3000;
 app.listen(port, (err)=>{
 	console.log('listening on port '+port);
 });
