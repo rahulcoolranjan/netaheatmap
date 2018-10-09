@@ -1,0 +1,35 @@
+Channels for nation and each state:-
+
+Nation/state name - channel-name
+
+India - india-heatmap
+Andhra Pradesh -  andhra-heatmap
+Arunachal Pradesh - arunachal-heatmap
+Assam - assam-heatmap
+Bihar - bihar-heatmap
+Chhattisgarh - chhattisgarh-heatmap
+Goa - goa-heatmap
+Gujarat - gujarat-heatmap
+Haryana - haryana-heatmap
+Himachal Pradesh - himachal-heatmap
+Jammu & Kashmir - jk-heatmap
+Jharkhand - jharkhand-heatmap
+Karnataka - karnataka-heatmap
+Kerala - kerala-heatmap
+Madhya Pradesh- mp-heatmap
+Maharashtra - maharashtra-heatmap
+Manipur - manipur-heatmap
+Meghalaya - meghalaya-heatmap
+Mizoram - mizoram-heatmap
+Nagaland - nagaland-heatmap
+Odisha - odisha-heatmap
+Punjab - punjab-heatmap
+Rajasthan - rajasthan-heatmap
+Sikkim - sikkim-heatmap
+Tamil Nadu - tamilnadu-heatmap
+Telangana - telangana-heatmap
+Tripura - tripura-heatmap
+Uttarakhand - uttarakhand-heatmap
+Uttar Pradesh - up-heatmap
+West Bengal - bengal-heatmap
+Andaman and Nicobar Islands - ani-heatmap

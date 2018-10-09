@@ -13,10 +13,13 @@ mongoose.connect('mongodb://localhost:27017/map_ven',{useNewUrlParser: true})
   .then(() =>  console.log('db connection succesful'))
   .catch((err) => console.error(err));
 
+
+ 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-/*
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -27,7 +30,7 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
-});*/
+});
 
 
 app.use('/map', mapRouter);
@@ -46,7 +49,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send('error');
 });
 
 module.exports = app;
