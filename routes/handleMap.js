@@ -22,68 +22,54 @@ router.get("/pusher", (req, res) => {
 	timer = 0;
 	if (timer == 0) {
 		Get = req.query;
+		console.log(Get);
 		/*state_parse={
 			"state_id":"9782ecfe-2cd9-4f45-8f16-5c9a8e1b0344",
 			"cities":{"id":"a174f79e-c365-458d-bdb4-2c7ccbed0207","rating":"3","cl":"green","avg_rating":"4","avg_cl":"yellow"}	
 		};*/
 		//http://localhost:3000/map/pusher?lat=31.2522116&lng=75.7031153&rating=4&color=green&average_rating=2&average_color=yellow
-		async.waterfall([
+		// async.waterfall([
 
-			function (callback) {
-				console.log("Zone 1a");
-				var url_fetch = function (url, options, callback) {
-					if (!callback && typeof options === 'function') {
-						callback = options;
-						options = undefined;
-					}
-					var urls = url;
-					fetch.fetchUrl(urls, {}, (error, meta, body) => {
-						if (error) {
-							return console.log('ERROR', error.message || error);
-						}
-						return callback(null, body);
-					});
-				}
-				process_url = "http://neta-app.com/api/v1/constituencies/latlng?lat=" + Get.lat + "&lng=" + Get.lng + "";
-				url_data = url_fetch(process_url, {}, (req, res) => {
-					url_data = "" + res;
-					console.log("Getting Data");
-					callback(null, "val1");
-				});
+		// 	// function (callback) {
+		// 	// 	console.log("Zone 1a");
+		// 	// 	var url_fetch = function (url, options, callback) {
+		// 	// 		if (!callback && typeof options === 'function') {
+		// 	// 			callback = options;
+		// 	// 			options = undefined;
+		// 	// 		}
+		// 	// 		var urls = url;
+		// 	// 		fetch.fetchUrl(urls, {}, (error, meta, body) => {
+		// 	// 			if (error) {
+		// 	// 				return console.log('ERROR', error.message || error);
+		// 	// 			}
+		// 	// 			return callback(null, body);
+		// 	// 		});
+		// 	// 	}
+		// 	// 	process_url = "http://neta-app.com/api/v1/constituencies/latlng?lat=" + Get.lat + "&lng=" + Get.lng + "";
+		// 	// 	url_data = url_fetch(process_url, {}, (req, res) => {
+		// 	// 		url_data = "" + res;
+		// 	// 		console.log("Getting Data");
+		// 	// 		callback(null, "val1");
+		// 	// 	});
 
-			},
-			function (data, callback) {
-				json_Data = JSON.parse(url_data);
-				assembly_id = json_Data.data.selected.assembly_id;
-				state_code_id = json_Data.data.code;
-				map_type = Get.state_code ? "stateMap" : "nationalMap";
-				console.log("Got Assembly Id: " + assembly_id);
-				console.log("Got State Code: " + state_code_id);
-				state_parse = {
-					"lat": "" + Get.lat + "",
-					"lng": "" + Get.lng + "",
-					"rating": "" + Get.rating + "",
-					"cl": "" + Get.color + "",
-					"avg_rating": "" + Get.average_rating + "",
-					"avg_cl": "" + Get.average_color + ""
-				};
-				console.log("Avn");
-				setTimeout(() => {
-					pusher.trigger(map_type + "-" + state_code_id + "-" + Get.candidateId, 'my-event', {
-						"area": state_parse
-					});
-				}, 5000);
-				timer++;
-				res.render("../views/pusherHandle", {
-					map_type: map_type,
-					stateCode: state_code_id,
-					assemblyId: assembly_id,
-					candidateId: Get.candidateId,
-					state_parse: JSON.stringify(state_parse)
-				});
-			},
-		], function (err, result) {
-			console.log(err);
+		// 	// },
+		// 	function (callback) {
+		// 		//json_Data = JSON.parse(url_data);
+		// 		//assembly_id = json_Data.data.selected.assembly_id;
+
+		// 	},
+		// ], function (err, result) {
+		// 	console.log(err);
+		// });
+
+
+		state_code_id = Get.state_code;
+		map_type = Get.state_code ? "stateMap" : "nationalMap";
+		timer++;
+		res.render("../views/pusherHandle", {
+			map_type: map_type,
+			stateCode: state_code_id,
+			candidateId: Get.candidature_id
 		});
 	}
 });
@@ -96,23 +82,53 @@ function genRandomColor() {
 }
 router.post("/stateMap", (req, res) => {
 	state_parse = req.body.dataReq;
-	assembly_id = req.body.assemblyId;
 	state_parse = JSON.parse(state_parse)["area"];
-	// console.log(state_parse);
-	// console.log(state_parse.lat);
+	console.log(state_parse);
+
+	console.log(state_parse);
+	console.log(state_parse.lat);
 	lat = state_parse.lat;
 	lng = state_parse.lng;
 	rating = state_parse.rating;
 	cl = state_parse.cl;
-	avg_rating = state_parse.avg_rating;
-	avg_cl = state_parse.avg_cl;
+	// // avg_rating = state_parse.avg_rating;
+	// // avg_cl = state_parse.avg_cl;
 	state_all = [];
 	city_all = [];
-	cns = 0;
+	// cns = 0;
 	console.log("State Parse c");
 	async.waterfall([
+
 		function (callback) {
+			console.log("Zone 1a");
+			var url_fetch = function (url, options, callback) {
+				if (!callback && typeof options === 'function') {
+					callback = options;
+					options = undefined;
+				}
+				var urls = url;
+				fetch.fetchUrl(urls, {}, (error, meta, body) => {
+					if (error) {
+						return console.log('ERROR', error.message || error);
+					}
+					return callback(null, body);
+				});
+			}
+			process_url = "http://neta-app.com/api/v1/constituencies/latlng?lat=" + lat + "&lng=" + lng + "";
+			console.log("Zone 1b");
+			url_data = url_fetch(process_url, {}, (req, res) => {
+				console.log("Zone 1c");
+				url_data = "" + res;
+				console.log("Getting Data");
+				callback(null, "val1");
+			});
+
+		},
+		function (data, callback) {
+			console.log("Zone 2a");
 			cities = [];
+			json_Data = JSON.parse(url_data);
+			assembly_id = json_Data.data.selected.assembly_id;
 			Cities.find({
 				"id": assembly_id
 			}).then((data_ct) => {
@@ -127,9 +143,7 @@ router.post("/stateMap", (req, res) => {
 					"city_id": data_ct[0].id,
 					"city_cords": data_ct[0].cords,
 					"rating": rating,
-					"cl": cl,
-					"avg_rating": avg_rating,
-					"avg_cl": avg_cl
+					"cl": cl
 				})
 				State.find({
 					"id": state_id

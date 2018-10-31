@@ -3,24 +3,22 @@
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
-
     <script>
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
         window.meta_data = null;
         var stateCode = "<%= stateCode %>";
-        var assemblyId = "<%= assemblyId %>";
         var candidateId = "<%= candidateId %>";
         var map_type = "<%= map_type %>";
-        var tempGetData = '{"area":<%- state_parse %>}';
         var pusher = new Pusher('24e9d0687e80f1b51c74', {
             cluster: 'ap2',
             forceTLS: true
         });
-        var channel = pusher.subscribe(map_type + "-" + stateCode + "-" + candidateId);
+        var channelName = map_type + "-" + (stateCode ? stateCode + "-" : "") + candidateId
+        var channel = pusher.subscribe(channelName);
         channel.bind('my-event',
             function (data) {
-                parsetoRenderer(JSON.stringify(data), assemblyId);
+                parsetoRenderer(JSON.stringify(data));
             }
         );
     </script>
@@ -28,38 +26,25 @@
         // console.log("Try it out"); //{"area":"[object Object]"}
         // console.log(JSON.stringify(tempGetData));
         //console.log(tempGetData);
-        setTimeout(() => {
+        // setTimeout(() => {
 
-            parsetoRenderer(tempGetData, assemblyId);
-        }, 6000);
+        //     parsetoRenderer(tempGetData, assemblyId);
+        // }, 6000);
 
 
-        function parsetoRenderer(getData, assemblyId) {
+        function parsetoRenderer(getData) {
             console.log("Data Received ");
             console.log(getData);
             $.ajax({
                 method: "post",
                 url: "<%= map_type %>",
                 data: {
-                    dataReq: getData,
-                    assemblyId: assemblyId
+                    dataReq: getData
                 },
                 success: function (data) {
                     $("#mapRender").html(data);
                 }
             })
-            //  var xmlHttp = new XMLHttpRequest();
-            // xmlHttp.open("POST", "nationalMap", true);
-            // xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            // xmlHttp.send("dataReq="+getData+"");
-            // xmlHttp.onreadystatechange = function()
-            // {
-            //     if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            //     {
-            //         //console.log(xmlHttp.responseText);
-            //         document.getElementById("mapRender").innerHTML=xmlHttp.responseText;
-            //     }
-            // }
         }
     </script>
 </head>
