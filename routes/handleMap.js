@@ -272,8 +272,9 @@ router.post("/nationalMap", (req, res) => {
 					state_cords = data[0].cords;
 					state_cordinate = data[0].state_coordinate;
 					state_cords = state_cords.replace(/&#34;/gi, '"');
-					console.log("STATE");
+					console.log("National");
 					//console.log(state_cords);
+					console.log(national_cords);
 					message = {
 						"national_cord": national_cords,
 						"state_cord": state_cords,

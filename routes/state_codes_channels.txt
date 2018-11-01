@@ -1,0 +1,70 @@
+// PUNJAB - PHAGWARA
+{
+    "area":{
+    "lat": "31.4329",
+    "lng": "75.7139",
+    "rating":"4",
+    "cl": "ff9922"
+    }
+}
+
+// MP - BHOPAL
+{
+    "area":{
+    "lat": "23.2599",
+    "lng": "77.4126",
+    "rating":"4",
+    "cl": "ff9922"
+    }
+}
+
+// GOA - PANAJI
+{
+    "area":{
+    "lat": "15.4909",
+    "lng": "73.8278",
+    "rating":"4",
+    "cl": "ff9922"
+    }
+}
+
+  Name                                     STATE_CODE                  CHANNEL-NAME
+
+1 Andaman and Nicobar Islands                 AN                        an-heatmap
+2 Andhra Pradesh                              AP                        ap-heatmap
+4 Arunachal Pradesh                           AR                        ar-heatmap
+5 Assam                                       AS                        as-heatmap  
+6 Bihar                                       BR                        br-heatmap
+7 Chandigarh                                  CH                        ch-heatmap
+8 Chattisgarh                                 CG                        cg-heatmap
+9 Dadra and Nagar Haveli                      DH                        dh-heatmap
+10 Daman and Diu                              DD                        dd-heatmap
+11 Delhi                                      DL                        dl-heatmap
+12 Goa                                        GA                        ga-heatmap
+13 Gujarat                                    GJ                        gj-heatmap
+14 Haryana                                    HR                        hr-heatmap
+15 Himachal Pradesh                           HP                        hp-heatmap
+16 Jammu and Kashmir                          JK                        jk-heatmap
+17 Jharkhand                                  JH                        jh-heatmap
+18 Karnataka                                  KA                        ka-heatmap
+19 Kerala                                     KL                        kl-heatmap
+20 Lakshadweep Islands                        LD                        ld-heatmap
+21 Madhya Pradesh                             MP                        mp-heatmap
+22 Maharashtra                                MH                        mh-heatmap
+23 Manipur                                    MN                        mn-heatmap
+24 Meghalaya                                  ML                        ml-heatmap
+25 Mizoram                                    MZ                        mz-heatmap
+26 Nagaland                                   NL                        nl-heatmap
+27 Odisha                                     OR                        or-heatmap
+28 Pondicherry                                PY                        py-heatmap
+29 Punjab                                     PB                        pb-heatmap
+30 Rajasthan                                  RJ                        rj-heatmap
+31 Sikkim                                     SK                        sk-heatmap
+32 Tamil Nadu                                 TN                        tn-heatmap
+33 Telangana                                  TS                        ts-heatmap
+34 Tripura                                    TR                        tr-heatmap
+35 Uttar Pradesh                              UP                        up-heatmap
+36 Uttarakhand                                UK                        uk-heatmap
+37 West Bengal                                WB                        wb-heatmap
+
+
