@@ -3,19 +3,17 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var bodyParser = require('body-parser')
 var mapRouter = require('./routes/handleMap');
 
 var app = express();
-var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-var mongoURL = "mongodb://localhost:27017/map_ven";
-mongoose.connect(process.env.MONGO_URL || mongoURL,{useNewUrlParser: true})
-  .then(() =>  console.log('db connection succesful'))
-  .catch((err) => console.error(err));
 
-
- 
+// var mongoose = require('mongoose');
+// mongoose.Promise = global.Promise;
+// var mongoURL = "mongodb://rahul:demo123@ds127132.mlab.com:27132/map_ven";
+// mongoose.connect(process.env.MONGO_URL || mongoURL,{useNewUrlParser: true})
+//   .then(() =>  console.log('db connection succesful'))
+//   .catch((err) => console.error(err));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,7 +32,7 @@ app.use(function(req, res, next) {
 });
 
 
-app.use('/map', mapRouter);
+app.use('/heatMap', mapRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
