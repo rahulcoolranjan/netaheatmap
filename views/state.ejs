@@ -275,7 +275,8 @@
   </script>
   <title>Neta</title>
   <meta name="csrf-param" content="authenticity_token" />
-  <meta name="csrf-token" content="vDkQa1L9KrfDua8+XDPo93/aK/fmicC2bdcb7lRniWaB3cnJpiX8sBXyJJnocsV92j4rtQj9A0nd9RejyMAJtA==" />
+  <meta name="csrf-token" content="vDkQa1L9KrfDua8+XDPo93/aK/fmicC2bdcb7lRniWaB3cnJpiX8sBXyJJnocsV92j4rtQj9A0nd9RejyMAJtA=="
+  />
   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
   <link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
   <link rel="stylesheet" media="all" href="https://neta-app.com/assets/application-cb0dd668b47974a2ad5a7922a588487b4707c30fb80e5ee4c76fe7789bb2f005.css"
@@ -288,20 +289,51 @@
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.css' rel='stylesheet' />
 
+  <style>
+    .legend {
+      background-color: #fff;
+      /* border-radius: 3px; */
+      /* bottom: 30px; */
+      /* box-shadow: 0 1px 2px rgba(0,0,0,0.10); */
+      font: 20px/28px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+      /* padding: 10px; */
+      position: absolute;
+      right: 130px;
+      bottom: 90px;
+      /* z-index: 1; */
+    }
+
+    .legend h4 {
+      margin: 0 0 10px;
+    }
+
+    .legend div span {
+      /* border-radius: 50%; */
+      display: inline-block;
+      height: 20px;
+      margin-right: 20px;
+      width: 30px;
+    }
+  </style>
+
   <div id="map" style="width: 100%; height:100vh; min-height:100vh;">
+  </div>
+  <div id='state-legend' class='legend'>
+    <!-- <h4>Rating</h4> -->
+    <div>
+      <span style='background-color: #ff3125'></span>1</div>
+    <div>
+      <span style='background-color: #ffa425'></span>2</div>
+    <div>
+      <span style='background-color: #dfce3b'></span>3</div>
+    <div>
+      <span style='background-color: #8cad30'></span>4</div>
+    <div>
+      <span style='background-color: #30ad63'></span>5</div>
   </div>
 
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFkaHUzMTQiLCJhIjoiY2pjMXdsYW5hMDdmNzMybXdrM3o3MnRvdiJ9.DLm1UKSjtw6eWzzlAYBotQ';
-    /*  var map = new mapboxgl.Map({
-          container: 'map',
-          style: 'mapbox://styles/madhu314/cjc8zh45k7fpi2spltb98qv5c',
-          center: [77.118909062492, 28.6412210976328],
-          zoom: 4,
-          attributionControl: false,
-          logoPosition: 'bottom-left'
-      });
-    */
     var map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/madhu314/cjc8zh45k7fpi2spltb98qv5c', //mapbox://styles/mapbox/streets-v9',
@@ -314,65 +346,53 @@
 
       map.addSource("state_map", {
         "type": "geojson",
-        // "data": <%- stateCords %>
         "data": {
           "type": "FeatureCollection",
           "features": <%- stateCords %>
         }
       })
 
-      // map.addLayer({
-      //   "id": "fill-layer",
-      //   "type": "fill",
-      //   "source": "state_map",
-      //   "paint": {
-      //     "fill-color": "#006400"
-      //   },
-      //   "filter": ["==", "$type", "Polygon"]
-      // });
-      
+        <% for (let i = 0; i < message.length; i++) { %>
+        <% if (message[i].data) { %>
 
-      <% for(let i=0; i<message.length; i++){ %>
-        <% if(message[i].data){ %>
-      
-      map.addSource("<%= message[i].regionId %>", {
-        "type": "geojson",
-        "data": {
-          "type": "FeatureCollection",
-          "features": [<%- message[i].data %>]
-        }
-      })
+            map.addSource("<%= message[i].regionId %>", {
+              "type": "geojson",
+              "data": {
+                "type": "FeatureCollection",
+                "features": [<%- message[i].data %>]
+              }
+            })
 
-      map.addLayer({
-        "id": "<%= message[i].regionId %>",
-        "type": "fill",
-        "source": "<%= message[i].regionId %>",
-        "paint": {
-          "fill-color": "<%= message[i].color %>"
-        },
-        "filter": ["==", "$type", "Polygon"]
-      });
+            map.addLayer({
+              "id": "<%= message[i].regionId %>",
+              "type": "fill",
+              "source": "<%= message[i].regionId %>",
+              "paint": {
+                "fill-color": "<%= message[i].color %>"
+              },
+              "filter": ["==", "$type", "Polygon"]
+            });
 
-      map.addLayer({
-        "id": "line<%= message[i].regionId %>",
-        "type": "line",
-        "source": "<%= message[i].regionId %>",
-        "paint": {
-          "line-color": "#dddddd",
-          "line-width": 1
-        },
-        "filter": ["==", "$type", "Polygon"]
-      });
-      map.addLayer({
-    "id": "symbols<%= message[i].regionId %>",
-    "type": "symbol",
-    "source": "<%= message[i].regionId %>",
-    "layout": {
-        "text-font": ["Open Sans Regular"],
-        "text-field": '<%- message[i].name %>',
-        "text-size": 12
-    }
-});
+            map.addLayer({
+              "id": "line<%= message[i].regionId %>",
+              "type": "line",
+              "source": "<%= message[i].regionId %>",
+              "paint": {
+                "line-color": "#dddddd",
+                "line-width": 1
+              },
+              "filter": ["==", "$type", "Polygon"]
+            });
+            map.addLayer({
+              "id": "symbols<%= message[i].regionId %>",
+              "type": "symbol",
+              "source": "<%= message[i].regionId %>",
+              "layout": {
+                "text-font": ["Open Sans Regular"],
+                "text-field": '<%- message[i].name %>',
+                "text-size": 12
+              }
+            });
       <% } %>
       <% } %>
     });

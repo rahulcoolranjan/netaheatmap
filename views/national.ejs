@@ -23,27 +23,57 @@
 
   <!-- <div id="map" style="width: 800px; height: 800px">
   </div> -->
-<!-- 22 -->
-<div id="map" style="width: 100%; height:100vh; min-height:100vh;"></div> 
-  
+  <!-- 22 -->
+  <style>
+    .legend {
+      background-color: #fff;
+      /* border-radius: 3px; */
+      /* bottom: 30px; */
+      /* box-shadow: 0 1px 2px rgba(0,0,0,0.10); */
+      font: 20px/28px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+      /* padding: 10px; */
+      position: absolute;
+      right: 200px;
+      bottom: 150px;
+      /* z-index: 1; */
+    }
+
+    .legend h4 {
+      margin: 0 0 2px;
+    }
+
+    .legend div span {
+      /* border-radius: 50%; */
+      display: inline-block;
+      height: 20px;
+      margin-right: 20px;
+      width: 30px;
+    }
+  </style>
+  <div id="map" style="width: 100%; height:100vh; min-height:100vh;"></div>
+  <div id='state-legend' class='legend'>
+    <!-- <h4>Rating</h4> -->
+    <div>
+      <span style='background-color: #ff3125'></span>1</div>
+    <div>
+      <span style='background-color: #ffa425'></span>2</div>
+    <div>
+      <span style='background-color: #dfce3b'></span>3</div>
+    <div>
+      <span style='background-color: #8cad30'></span>4</div>
+    <div>
+      <span style='background-color: #30ad63'></span>5</div>
+  </div>
+
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFkaHUzMTQiLCJhIjoiY2pjMXdsYW5hMDdmNzMybXdrM3o3MnRvdiJ9.DLm1UKSjtw6eWzzlAYBotQ';
-    /*  var map = new mapboxgl.Map({
-          container: 'map',
-          style: 'mapbox://styles/madhu314/cjc8zh45k7fpi2spltb98qv5c',
-          center: [77.118909062492, 28.6412210976328],
-          zoom: 4,
-          attributionControl: false,
-          logoPosition: 'bottom-left'
-      });
-    */
     var map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/madhu314/cjc8zh45k7fpi2spltb98qv5c',//mapbox://styles/mapbox/streets-v9',
       center: [81.0882, 23.1458],
       zoom: 4,
-      attributionControl: false,
-      logoPosition: 'bottom-left'
+      // attributionControl: false,
+      // logoPosition: 'bottom-left',
     });
     map.on('load', function () {
       map.addSource("country_map", {
@@ -51,87 +81,64 @@
         "data": <%- nationalCords %>
       })
 
-      // map.addLayer({
-      //   "id": "country_map",
-      //   "type": "fill",
-      //   "source": "country_map",
-      //   "paint": {
-      //     "fill-color": "#006400"
-      //   },
-      //   "filter": ["==", "$type", "Polygon"]
-      // });
+        <% for (var i = 0; i < message.length; i++) { %>
 
-      // map.addLayer({
-      //   "id": "stroke-layer",
-      //   "type": "line",
-      //   "source": "country_map",
-      //   "paint": {
-      //     "line-color": "#dddddd",
-      //     "line-width": 2
-      //   },
-      //   "filter": ["==", "$type", "Polygon"]
-      // });
+        <% if (message[i].data) { %>
 
-
-      <% for(var i=0; i<message.length; i++){ %>
-
-        <% if(message[i].data){ %>
-
-      map.addSource("<%= message[i].regionId %>", {
-        "type": "geojson",
-        "data": <%- message[i].data %>
+            map.addSource("<%= message[i].regionId %>", {
+              "type": "geojson",
+              "data": <%- message[i].data %>
       })
 
-      map.addSource("<%= message[i].name %>",{
-        "type": "geojson",
-        "data": { "type": "FeatureCollection", "features": [{"id":"<%= i %>","type":"Feature","geometry":{"type":"Point","coordinates": [<%= message[i].pointData %>],"properties":{"id":"<%= i %>","name":"<%= message[i].name %>"}}}]} 
-      });
+            map.addSource("<%= message[i].name %>", {
+              "type": "geojson",
+              "data": { "type": "FeatureCollection", "features": [{ "id": "<%= i %>", "type": "Feature", "geometry": { "type": "Point", "coordinates": [<%= message[i].pointData %>], "properties": { "id": "<%= i %>", "name": "<%= message[i].name %>" } } }] }
+            });
 
-      map.addLayer({
-        "id": "<%= message[i].regionId %>",
-        "type": "fill",
-        "source": "<%= message[i].regionId %>",
-        "paint": {
-          "fill-color":  "<%= message[i].color %>",
-          "fill-opacity": 1
-        },
-        "filter": ["==", "$type", "Polygon"]
-      });
+            map.addLayer({
+              "id": "<%= message[i].regionId %>",
+              "type": "fill",
+              "source": "<%= message[i].regionId %>",
+              "paint": {
+                "fill-color": "<%= message[i].color %>",
+                "fill-opacity": 1
+              },
+              "filter": ["==", "$type", "Polygon"]
+            });
 
-      map.addLayer({
-        "id": "line<%= message[i].regionId %>",
-        "type": "line",
-        "source": "<%= message[i].regionId %>",
-        "paint": {
-          "line-color": "#dddddd",
-          "line-width": 1
-        },
-        "filter": ["==", "$type", "Polygon"]
-      });
+            map.addLayer({
+              "id": "line<%= message[i].regionId %>",
+              "type": "line",
+              "source": "<%= message[i].regionId %>",
+              "paint": {
+                "line-color": "#dddddd",
+                "line-width": 1
+              },
+              "filter": ["==", "$type", "Polygon"]
+            });
 
-      map.addLayer({
-    "id": "symbols<%= message[i].regionId %>",
-    "type": "symbol",
-    "min-zoom": 100,
-    "source": "<%= message[i].name %>",
-    // "symbol-placement": "point",
-    "layout": {
-        "text-font": ["Open Sans Regular", "Arial Unicode MS Bold"],
-        "text-field": '<%= message[i].name %>',
-        "text-size": 10,
-        // "text-anchor": "center",
-        // "text-justify": "center",
-    },
-    // "filter": ["==", "$type", "Point"]
-});
+            map.addLayer({
+              "id": "symbols<%= message[i].regionId %>",
+              "type": "symbol",
+              "min-zoom": 100,
+              "source": "<%= message[i].name %>",
+              // "symbol-placement": "point",
+              "layout": {
+                "text-font": ["Open Sans Regular", "Arial Unicode MS Bold"],
+                "text-field": '<%= message[i].name %>',
+                "text-size": 10,
+                // "text-anchor": "center",
+                // "text-justify": "center",
+              },
+            });
 
       <% } %>
 
      <% } %>
-
     
     });
-    
+
+
   </script>
 
 </body>

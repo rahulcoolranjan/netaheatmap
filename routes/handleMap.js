@@ -3,7 +3,6 @@ var router = express.Router();
 const async = require('async');
 const fetch1 = require('node-fetch');
 var fetch = require("../my_modules/fetch");
-// var polylabel = require("polylabel")
 
 var geoJsonPoints = require("./geoJsonPoints");
 var geoJsonNational = require("./geoJsonNational");
@@ -24,7 +23,7 @@ router.get("/state", (req, res) => {
 	async.waterfall([
 
 		function (callback) {
-			console.log("Zone 1a");
+			// console.log("Zone 1a");
 			var url_fetch = function (url, options, callback) {
 				if (!callback && typeof options === 'function') {
 					callback = options;
@@ -39,17 +38,17 @@ router.get("/state", (req, res) => {
 				});
 			}
 			process_url = "http://neta-app.com/api/v1/constituencies/latlng?lat=" + lat + "&lng=" + lng + "";
-			console.log("Zone 1b");
+			// console.log("Zone 1b");
 			url_data = url_fetch(process_url, {}, (req, res) => {
-				console.log("Zone 1c");
+				// console.log("Zone 1c");
 				url_data = "" + res;
-				console.log("Getting Data");
+				// console.log("Getting Data");
 				callback(null, "val1");
 			});
 
 		},
 		function (data, callback) {
-			console.log("Zone 2a");
+			// console.log("Zone 2a");
 			let json_Data = JSON.parse(url_data);
 			state_id = json_Data.data.id;
 			let cities = json_Data.data.parliament;
@@ -59,13 +58,13 @@ router.get("/state", (req, res) => {
 				}
 
 				if (i == cities.length - 1) {
-					console.log("Iterator", i);
+					// console.log("Iterator", i);
 					callback(null, city_ids);
 				}
 			}
 		},
 		function (data, callback) {
-			console.log("Zone 2a");
+			// console.log("Zone 2a");
 			const body = {
 				ratee_id: candidateId,
 				region_ids: data
@@ -83,34 +82,26 @@ router.get("/state", (req, res) => {
 				});
 		},
 		function (json, callback) {
-			console.log('In Generate Message');
-			// state_ids = [
-			// 	"151925bc-bacd-4a51-a0d1-ae86acb445f4",
-			// 	"dcfd7c99-9212-4d8a-b8e3-6106ce068feb",
-			// 	"9322b9dd-b659-4c68-b189-aff893e9af2a",
-			// 	"6cd1b0e9-f5a6-40c6-92e2-b52f85398502"
-			// ];
+			// console.log('In Generate Message');
 			let data = json.data;
 			let cities_data = geoJsonCities.geoJsonCities[state_id];
-			console.log("Cities Data:- ", cities_data);
-			if(cities_data[0].properties.zoom){
-			  zoom = cities_data[0].properties.zoom
+			// console.log("Cities Data:- ", cities_data);
+			if (cities_data[0].properties.zoom) {
+				zoom = cities_data[0].properties.zoom
 			}
-			else{
+			else {
 				zoom = 6.2;
 			}
 
-			if(cities_data[0].properties.lat && cities_data[0].properties.lng){
+			if (cities_data[0].properties.lat && cities_data[0].properties.lng) {
 				lat = cities_data[0].properties.lat;
 				lng = cities_data[0].properties.lng;
 			}
-			
+
 			cities_data.shift();
-			console.log("After Shift");
-			// console.log("Cities Data:- ",cities_data);
-			// console.log("Data is:- ",data);
+			// console.log("After Shift");
 			for (let i = 0; i < city_ids.length; i++) {
-				console.log("City id:- ", city_ids[i]);
+				// console.log("City id:- ", city_ids[i]);
 				let str = data[city_ids[i]];
 				let res = str.split(",");
 				let avg_rating = Math.round(res[1]);
@@ -132,17 +123,13 @@ router.get("/state", (req, res) => {
 				}
 
 				for (let j = 0; j < cities_data.length; j++) {
-					// console.log("City ID:- ",city_ids[i]);
-					// console.log("City Data ID:- ",cities_data[j].id);
 					if (cities_data[j].id == city_ids[i]) {
-						// console.log("ID Matched");
 						geoJson = cities_data[j];
-						console.log("GEOJSON", geoJson);
+						// console.log("GEOJSON", geoJson);
 						break;
 					}
 				}
 
-				// console.log("GEOJSON",geoJson);
 				message.push({
 					regionId: city_ids[i],
 					name: geoJson ? geoJson.properties.name : "",
@@ -151,15 +138,12 @@ router.get("/state", (req, res) => {
 				});
 
 				if (i == city_ids.length - 1) {
-					// console.log("GEOJSON",message[i].data);
 					callback(null, message);
 				}
 			}
 		},
 		function (data, callback) {
 			console.log("CallBack Cycle Completed");
-			// console.log("GEOJSON",JSON.stringify(geoJsonStates.geoJsonStates[state_id]));
-			//console.log(message);
 			res.render("../views/state", {
 				message: message,
 				lat: lat,
@@ -183,7 +167,7 @@ router.get("/national", (req, res) => {
 	async.waterfall([
 
 		function (callback) {
-			console.log("Zone 1a");
+			// console.log("Zone 1a");
 			var url_fetch = function (url, options, callback) {
 				if (!callback && typeof options === 'function') {
 					callback = options;
@@ -200,7 +184,7 @@ router.get("/national", (req, res) => {
 			process_url = "https://api.neta-app.com/v2/country_states/all";
 			url_data = url_fetch(process_url, {}, (req, res) => {
 				url_data = "" + res;
-				console.log("Getting Data 1");
+				// console.log("Getting Data 1");
 				callback(null, "val1");
 			});
 
@@ -216,7 +200,7 @@ router.get("/national", (req, res) => {
 			}
 		},
 		function (data, callback) {
-			console.log("Zone 2a");
+			// console.log("Zone 2a");
 			const body = {
 				ratee_id: candidateId,
 				region_ids: data
@@ -233,21 +217,14 @@ router.get("/national", (req, res) => {
 					callback(null, json);
 				})
 				.catch(err => {
-				console.log("Error is ", err);
-			});
+					console.log("Error is ", err);
+				});
 		},
 		function (json, callback) {
-			console.log('In Generate Message');
-			// state_ids = [
-			// 	"151925bc-bacd-4a51-a0d1-ae86acb445f4",
-			// 	"dcfd7c99-9212-4d8a-b8e3-6106ce068feb",
-			// 	"9322b9dd-b659-4c68-b189-aff893e9af2a",
-			// 	"6cd1b0e9-f5a6-40c6-92e2-b52f85398502"
-			// ];
+			// console.log('In Generate Message');
 			data = json.data;
-			// console.log("Data is:- ",data);
 			for (let i = 0; i < state_ids.length; i++) {
-				console.log("State id:- ", state_ids[i]);
+				// console.log("State id:- ", state_ids[i]);
 				let str = data[state_ids[i]];
 				let res = str.split(",");
 				let avg_rating = Math.round(res[1]);
@@ -270,11 +247,10 @@ router.get("/national", (req, res) => {
 
 				geoJson = geoJsonStates.geoJsonStates[state_ids[i]];
 				if (geoJson) {
-					console.log("GEOJSON", geoJson);
+					// console.log("GEOJSON", geoJson);
 					name = geoJson.features[0].properties.name;
-					// p = polylabel(geoJson.features[0].geometry.coordinates[0], 1.0);
 					p = geoJsonPoints.geoJsonPoints[state_ids[i]];
-					console.log("Points", p);
+					// console.log("Points", p);
 					if (p)
 						p = [p[1], p[0]];
 				}
@@ -287,9 +263,6 @@ router.get("/national", (req, res) => {
 				});
 
 				if (i == state_ids.length - 1) {
-					// console.log("Data:- ",message[0].data);
-					// console.log("National:- ",geoJsonNational);
-					// console.log("GeoJson:- ",JSON.stringify(geoJsonStates.geoJsonStates['6cd1b0e9-f5a6-40c6-92e2-b52f85398502']));
 					callback(null, message);
 				}
 			}
