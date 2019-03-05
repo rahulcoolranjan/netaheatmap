@@ -8,13 +8,6 @@ var mapRouter = require('./routes/handleMap');
 
 var app = express();
 
-// var mongoose = require('mongoose');
-// mongoose.Promise = global.Promise;
-// var mongoURL = "mongodb://rahul:demo123@ds127132.mlab.com:27132/map_ven";
-// mongoose.connect(process.env.MONGO_URL || mongoURL,{useNewUrlParser: true})
-//   .then(() =>  console.log('db connection succesful'))
-//   .catch((err) => console.error(err));
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

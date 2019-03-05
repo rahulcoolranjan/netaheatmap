@@ -80,6 +80,16 @@
         "type": "geojson",
         "data": <%- nationalCords %>
       })
+      
+    // map.addLayer({
+    //   "id": "country_map",
+    //   "type": "fill",
+    //   "source": "country_map",
+    //   "paint": {
+    //   "fill-color": "#D3D3D3"
+    //   },
+    //   "filter": ["==", "$type", "Polygon"]
+    // });
 
         <% for (var i = 0; i < message.length; i++) { %>
 
@@ -90,6 +100,13 @@
               "data": <%- message[i].data %>
       })
 
+            // map.addSource("<%= message[i].regionId %>", {
+            //   "type": "geojson",
+            //   "data": {
+            //     "type": "FeatureCollection",
+            //     "features": [<%- message[i].data %>]
+            //   }
+            // })
             map.addSource("<%= message[i].name %>", {
               "type": "geojson",
               "data": { "type": "FeatureCollection", "features": [{ "id": "<%= i %>", "type": "Feature", "geometry": { "type": "Point", "coordinates": [<%= message[i].pointData %>], "properties": { "id": "<%= i %>", "name": "<%= message[i].name %>" } } }] }
@@ -117,10 +134,25 @@
               "filter": ["==", "$type", "Polygon"]
             });
 
+            // map.addLayer({
+            //   "id": "symbols<%= message[i].regionId %>",
+            //   "type": "symbol",
+            //   "min-zoom": 100,
+            //   "source": "<%= message[i].regionId %>",
+            //   // "symbol-placement": "point",
+            //   "layout": {
+            //     "text-font": ["Open Sans Regular", "Arial Unicode MS Bold"],
+            //     "text-field":  '<%- message[i].name %>',
+            //     "text-size": 10,
+            //     // "text-anchor": "center",
+            //     // "text-justify": "center",
+            //   },
+            // });
+
             map.addLayer({
               "id": "symbols<%= message[i].regionId %>",
               "type": "symbol",
-              "min-zoom": 100,
+              // "min-zoom": 100,
               "source": "<%= message[i].name %>",
               // "symbol-placement": "point",
               "layout": {
