@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -37,11 +38,9 @@
       bottom: 150px;
       /* z-index: 1; */
     }
-
     .legend h4 {
       margin: 0 0 2px;
     }
-
     .legend div span {
       /* border-radius: 50%; */
       display: inline-block;
@@ -90,28 +89,23 @@
       },
       "filter": ["==", "$type", "Polygon"]
     });
-
         <% for (var i = 0; i < message.length; i++) { %>
-
         <% if (message[i].data) { %>
-
-      //       map.addSource("<%= message[i].regionId %>", {
-      //         "type": "geojson",
-      //         "data": <%- message[i].data %>
-      // })
-
             map.addSource("<%= message[i].regionId %>", {
               "type": "geojson",
-              "data": {
-                "type": "FeatureCollection",
-                "features": [<%- message[i].data %>]
-              }
-            })
-            // map.addSource("<%= message[i].name %>", {
+              "data": <%- message[i].data %>
+      })
+            // map.addSource("<%= message[i].regionId %>", {
             //   "type": "geojson",
-            //   "data": { "type": "FeatureCollection", "features": [{ "id": "<%= i %>", "type": "Feature", "geometry": { "type": "Point", "coordinates": [<%= message[i].pointData %>], "properties": { "id": "<%= i %>", "name": "<%= message[i].name %>" } } }] }
-            // });
-
+            //   "data": {
+            //     "type": "FeatureCollection",
+            //     "features": [<%- message[i].data %>]
+            //   }
+            // })
+            map.addSource("<%= message[i].name %>", {
+              "type": "geojson",
+              "data": { "type": "FeatureCollection", "features": [{ "id": "<%= i %>", "type": "Feature", "geometry": { "type": "Point", "coordinates": [<%= message[i].pointData %>], "properties": { "id": "<%= i %>", "name": "<%= message[i].name %>" } } }] }
+            });
             map.addLayer({
               "id": "<%= message[i].regionId %>",
               "type": "fill",
@@ -122,55 +116,48 @@
               },
               "filter": ["==", "$type", "Polygon"]
             });
-
-            // map.addLayer({
-            //   "id": "line<%= message[i].regionId %>",
-            //   "type": "line",
-            //   "source": "<%= message[i].regionId %>",
-            //   "paint": {
-            //     "line-color": "#dddddd",
-            //     "line-width": 1
-            //   },
-            //   "filter": ["==", "$type", "Polygon"]
-            // });
-
             map.addLayer({
-              "id": "symbols<%= message[i].regionId %>",
-              "type": "symbol",
-              "min-zoom": 100,
+              "id": "line<%= message[i].regionId %>",
+              "type": "line",
               "source": "<%= message[i].regionId %>",
-              // "symbol-placement": "point",
-              "layout": {
-                "text-font": ["Open Sans Regular", "Arial Unicode MS Bold"],
-                "text-field":  '<%- message[i].name %>',
-                "text-size": 10,
-                // "text-anchor": "center",
-                // "text-justify": "center",
+              "paint": {
+                "line-color": "#dddddd",
+                "line-width": 1
               },
+              "filter": ["==", "$type", "Polygon"]
             });
-
             // map.addLayer({
             //   "id": "symbols<%= message[i].regionId %>",
             //   "type": "symbol",
-            //   // "min-zoom": 100,
-            //   "source": "<%= message[i].name %>",
+            //   "min-zoom": 100,
+            //   "source": "<%= message[i].regionId %>",
             //   // "symbol-placement": "point",
             //   "layout": {
             //     "text-font": ["Open Sans Regular", "Arial Unicode MS Bold"],
-            //     "text-field": '<%= message[i].name %>',
+            //     "text-field":  '<%- message[i].name %>',
             //     "text-size": 10,
             //     // "text-anchor": "center",
             //     // "text-justify": "center",
             //   },
             // });
-
+            map.addLayer({
+              "id": "symbols<%= message[i].regionId %>",
+              "type": "symbol",
+              // "min-zoom": 100,
+              "source": "<%= message[i].name %>",
+              // "symbol-placement": "point",
+              "layout": {
+                "text-font": ["Open Sans Regular", "Arial Unicode MS Bold"],
+                "text-field": '<%= message[i].name %>',
+                "text-size": 10,
+                // "text-anchor": "center",
+                // "text-justify": "center",
+              },
+            });
       <% } %>
-
      <% } %>
     
     });
-
-
   </script>
 
 </body>

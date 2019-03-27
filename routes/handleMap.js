@@ -3,6 +3,7 @@ var router = express.Router();
 const async = require('async');
 const fetch1 = require('node-fetch');
 var fetch = require("../my_modules/fetch");
+// var cache = require("./cache");
 
 var geoJsonPoints = require("./geoJsonPoints");
 var geoJsonNational = require("./geoJsonNational");
@@ -206,22 +207,22 @@ router.get("/national", (req, res) => {
 		},
 		function (data, callback) {
 			console.log("Zone 2a");
-			for (let i = 0; i < data.length; i++) {
-				state_data = geoJsonCities.geoJsonCities[data[i]];
-				let city_ids = [];
-				if (state_data) {
-					for (let j = 1; j < state_data.length; j++) {
-						city_ids.push(state_data[j].id);
-						city_ids_all.push(state_data[j].id);
-					}
-					state_city_data[data[i]] = city_ids;
-				}
-			}
-			console.log("State Cities IDs :- ", state_city_data);
+			// for (let i = 0; i < data.length; i++) {
+			// 	state_data = geoJsonCities.geoJsonCities[data[i]];
+			// 	let city_ids = [];
+			// 	if (state_data) {
+			// 		for (let j = 1; j < state_data.length; j++) {
+			// 			city_ids.push(state_data[j].id);
+			// 			city_ids_all.push(state_data[j].id);
+			// 		}
+			// 		state_city_data[data[i]] = city_ids;
+			// 	}
+			// }
+			// console.log("State Cities IDs :- ", state_city_data);
 			const body = {
 				ratee_id: candidateId,
-				region_ids: city_ids_all
-				// region_ids: data
+				// region_ids: city_ids_all
+				region_ids: data
 			};
 
 			fetch1('https://api.neta-app.com/v2/ratees/regional_stats', {
@@ -231,7 +232,7 @@ router.get("/national", (req, res) => {
 			})
 				.then(res => res.json())
 				.then(json => {
-					console.log(json);
+					// console.log(json);
 					// console.log("Cities Array Length", city_ids_all.length);
 					callback(null, json);
 				})
@@ -242,114 +243,114 @@ router.get("/national", (req, res) => {
 		function (json, callback) {
 			// console.log('In Generate Message');
 			data = json.data;
-			for (let i = 0; i < city_ids_all.length; i++) {
-				let str = data[city_ids_all[i]];
-				if (!str) {
-					str = '0,0'
-				}
-				if (str) {
-					let res = str.split(",");
-					let avg_rating = Math.round(res[1]);
-					let hex_code, geoJson, name, p, req_state;
-					if (avg_rating == 0) {
-						hex_code = "#D3D3D3";
-					}
-					else if (avg_rating == 1) {
-						hex_code = "#ff3125";
-					}
-					else if (avg_rating == 2) {
-						hex_code = "#ffa425";
-					}
-					else if (avg_rating == 3) {
-						hex_code = "#dfce3b";
-					}
-					else if (avg_rating == 4) {
-						hex_code = "#8cad30";
-					}
-					else if (avg_rating == 5) {
-						hex_code = "#30ad63";
-					}
-					for (let j = 0; j < state_ids.length; j++) {
-						let city_ids = state_city_data[state_ids[j]];
-						if (city_ids) {
-							for (let k = 0; k < city_ids.length; k++) {
-								if (city_ids_all[i] == city_ids[k]) {
-									req_state = state_ids[j];
-									break;
-								}
-							}
-							if (req_state) break;
-						}
-					}
-
-					let citiesGeoJson = geoJsonCities.geoJsonCities[req_state];
-					for (let j = 0; j < citiesGeoJson.length; j++) {
-						if (city_ids_all[i] == citiesGeoJson[j].id) {
-							geoJson = citiesGeoJson[j];
-							break;
-						}
-					}
-
-					if (geoJson) {
-						name = geoJson.properties.name;
-					}
-
-					message.push({
-						regionId: city_ids_all[i],
-						name: name,
-						data: JSON.stringify(geoJson),
-						color: hex_code,
-						// pointData: p
-					});
-					if (i == 3896) {
-						callback(null, message);
-					}
-				}
-			}
-
-			// for (let i = 0; i < state_ids.length; i++) {
-			// 	// console.log("State id:- ", state_ids[i]);
-			// 	let str = data[state_ids[i]];
-			// 	let res = str.split(",");
-			// 	let avg_rating = Math.round(res[1]);
-			// 	let hex_code, geoJson, name, p;
-			// 	if (avg_rating == 1) {
-			// 		hex_code = "#ff3125";
+			// for (let i = 0; i < city_ids_all.length; i++) {
+			// 	let str = data[city_ids_all[i]];
+			// 	if (!str) {
+			// 		str = '0,0'
 			// 	}
-			// 	else if (avg_rating == 2) {
-			// 		hex_code = "#ffa425";
-			// 	}
-			// 	else if (avg_rating == 3) {
-			// 		hex_code = "#dfce3b";
-			// 	}
-			// 	else if (avg_rating == 4) {
-			// 		hex_code = "#8cad30";
-			// 	}
-			// 	else if (avg_rating == 5) {
-			// 		hex_code = "#30ad63";
-			// 	}
+			// 	if (str) {
+			// 		let res = str.split(",");
+			// 		let avg_rating = Math.round(res[1]);
+			// 		let hex_code, geoJson, name, p, req_state;
+			// 		if (avg_rating == 0) {
+			// 			hex_code = "#D3D3D3";
+			// 		}
+			// 		else if (avg_rating == 1) {
+			// 			hex_code = "#ff3125";
+			// 		}
+			// 		else if (avg_rating == 2) {
+			// 			hex_code = "#ffa425";
+			// 		}
+			// 		else if (avg_rating == 3) {
+			// 			hex_code = "#dfce3b";
+			// 		}
+			// 		else if (avg_rating == 4) {
+			// 			hex_code = "#8cad30";
+			// 		}
+			// 		else if (avg_rating == 5) {
+			// 			hex_code = "#30ad63";
+			// 		}
+			// 		for (let j = 0; j < state_ids.length; j++) {
+			// 			let city_ids = state_city_data[state_ids[j]];
+			// 			if (city_ids) {
+			// 				for (let k = 0; k < city_ids.length; k++) {
+			// 					if (city_ids_all[i] == city_ids[k]) {
+			// 						req_state = state_ids[j];
+			// 						break;
+			// 					}
+			// 				}
+			// 				if (req_state) break;
+			// 			}
+			// 		}
 
-			// 	geoJson = geoJsonStates.geoJsonStates[state_ids[i]];
-			// 	if (geoJson) {
-			// 		// console.log("GEOJSON", geoJson);
-			// 		name = geoJson.features[0].properties.name;
-			// 		p = geoJsonPoints.geoJsonPoints[state_ids[i]];
-			// 		// console.log("Points", p);
-			// 		if (p)
-			// 			p = [p[1], p[0]];
-			// 	}
-			// 	message.push({
-			// 		regionId: state_ids[i],
-			// 		name: name,
-			// 		data: JSON.stringify(geoJson),
-			// 		color: hex_code,
-			// 		pointData: p
-			// 	});
+			// 		let citiesGeoJson = geoJsonCities.geoJsonCities[req_state];
+			// 		for (let j = 0; j < citiesGeoJson.length; j++) {
+			// 			if (city_ids_all[i] == citiesGeoJson[j].id) {
+			// 				geoJson = citiesGeoJson[j];
+			// 				break;
+			// 			}
+			// 		}
 
-			// 	if (i == state_ids.length - 1) {
-			// 		callback(null, message);
+			// 		if (geoJson) {
+			// 			name = geoJson.properties.name;
+			// 		}
+
+			// 		message.push({
+			// 			regionId: city_ids_all[i],
+			// 			name: name,
+			// 			data: JSON.stringify(geoJson),
+			// 			color: hex_code,
+			// 			// pointData: p
+			// 		});
+			// 		if (i == 3896) {
+			// 			callback(null, message);
+			// 		}
 			// 	}
 			// }
+
+			for (let i = 0; i < state_ids.length; i++) {
+				// console.log("State id:- ", state_ids[i]);
+				let str = data[state_ids[i]];
+				let res = str.split(",");
+				let avg_rating = Math.round(res[1]);
+				let hex_code, geoJson, name, p;
+				if (avg_rating == 1) {
+					hex_code = "#ff3125";
+				}
+				else if (avg_rating == 2) {
+					hex_code = "#ffa425";
+				}
+				else if (avg_rating == 3) {
+					hex_code = "#dfce3b";
+				}
+				else if (avg_rating == 4) {
+					hex_code = "#8cad30";
+				}
+				else if (avg_rating == 5) {
+					hex_code = "#30ad63";
+				}
+
+				geoJson = geoJsonStates.geoJsonStates[state_ids[i]];
+				if (geoJson) {
+					// console.log("GEOJSON", geoJson);
+					name = geoJson.features[0].properties.name;
+					p = geoJsonPoints.geoJsonPoints[state_ids[i]];
+					// console.log("Points", p);
+					if (p)
+						p = [p[1], p[0]];
+				}
+				message.push({
+					regionId: state_ids[i],
+					name: name,
+					data: JSON.stringify(geoJson),
+					color: hex_code,
+					pointData: p
+				});
+
+				if (i == state_ids.length - 1) {
+					callback(null, message);
+				}
+			}
 		},
 		function (data, callback) {
 			// console.log('Message:-',message);
@@ -363,6 +364,12 @@ router.get("/national", (req, res) => {
 		});
 	});
 });
+
+// router.get("/rest", cache.cache(20), (req, res) => {
+// 	setTimeout(() => {
+// 		res.render('../views/index', { title: 'Hey', message: 'Hello there', date: new Date() })
+// 	}, 5000) //setTimeout was used to simulate a slow processing request
+// });
 
 
 module.exports = router;
