@@ -1,5 +1,5 @@
 {
-  "name": "server1",
+  "name": "heatmap-server",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "heroku": "^7.18.3",
     "heroku-cli": "^7.0.9",
     "http-errors": "^1.6.2",
-    "morgan": "1.9.0",
+    "morgan": "^1.9.1",
     "nodemon": "^1.18.9"
   },
   "engines": {
